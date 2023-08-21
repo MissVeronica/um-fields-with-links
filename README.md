@@ -3,9 +3,9 @@ Extension to Ultimate Member to include a Link in the Profile Form's Field Value
 
 ## UM Settings
 UM Settings -> Appearance -> Profile
-1. Field Label With Link - meta_key, url, title, icon (one per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms label placeholder: {link], {/link}
-2. UM Forms Builder Labels: First Key {link} link {/link} in label - Last key {link} Name
-3. Field Value With Link - meta_key, url, title, icon (one per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}
+1. Field Label With Link - meta_key, url, title, icon (one per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms label placeholder: <code>{link], {/link}</code>
+2. UM Forms Builder Labels: <code>First Key {link} link {/link} in label</code> - <code>Last key {link} Name>/code>
+3. Field Value With Link - meta_key, url, title, icon (one per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: <code>{userid}, {value}</code>
 4. Plugin is using the UM Settings -> Access -> Other -> "Allow external link redirect confirm" if clicked.
 
 ## Examples
