@@ -9,7 +9,7 @@ Extension to Ultimate Member to include a Link in the Profile Form's Field Value
 
 ## Examples ##
 1. Field Label With Link - meta_key, url, title, icon (one per line)
-2. UM Forms Builder Labels: <code>First Key {link} link {/link} in label</code> - <code>Last key {link} Name></code>
+2. UM Forms Builder Labels: <code>First Key {link} link {/link} in label</code> - <code>Last key {link} Name</code>
 
 <code>first_key, https://ultimatemember.com/, UM Home Page, um-faicon-external-link
 last_key, /user/{userid}/, Test User link, um-faicon-external-link</code>
