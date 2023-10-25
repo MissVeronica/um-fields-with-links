@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
- * Description:     Extension to Ultimate Member to include a Link in the Profile Form's Field Value and/or Field Label.
- * Version:         1.0.0
+ * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
+ * Version:         2.0.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -60,33 +60,41 @@ class UM_Field_With_Links {
 
         if ( UM()->fields()->set_mode == 'profile' ) {
 
-            if ( isset( UM()->fields()->viewing ) && UM()->fields()->viewing === true ) {
+            if ( isset( UM()->fields()->viewing ) && UM()->fields()->viewing !== true ) {
+                return $array;
+            }
 
-                $this->get_field_meta_key_with_link( 'label' );
+        } else {
 
-                if ( is_array( $this->links['label'] )) {
-                    foreach( $this->links['label'] as $key => $data ) {
+            if ( UM()->fields()->set_mode != 'register' ) {
+                return $array;
+            }
+        }
 
-                        if ( isset( $array[$key] )) {
+        $this->get_field_meta_key_with_link( 'label' );
 
-                            $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$array[$key]['metakey']]['url'] );
-                            $onclick_alert = $this->alert_external_url_link( $url );
+        if ( is_array( $this->links['label'] )) {
+            foreach( $this->links['label'] as $key => $data ) {
 
-                            $array[$key]['label'] = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['title'] ) . '" ' . $onclick_alert . '>', $array[$key]['label'] );
-                            $array[$key]['label'] = str_replace( '{/link}', '</a>', $array[$key]['label'] );
+                if ( isset( $array[$key] )) {
 
-                            if ( strpos( $array[$key]['label'], '</a>' ) === false ) {
-                                $array[$key]['label'] .= '</a>';
-                            }
+                    $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$array[$key]['metakey']]['url'] );
+                    $onclick_alert = $this->alert_external_url_link( $url );
 
-                            if ( ! empty( $this->links['label'][$array[$key]['metakey']]['icon'] )) {
-                                $array[$key]['label'] .= ' <i class="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['icon'] ) . '"></i>';
-                            }
-                        }
+                    $array[$key]['label'] = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['title'] ) . '" ' . $onclick_alert . '>', $array[$key]['label'] );
+                    $array[$key]['label'] = str_replace( '{/link}', '</a>', $array[$key]['label'] );
+
+                    if ( strpos( $array[$key]['label'], '</a>' ) === false ) {
+                        $array[$key]['label'] .= '</a>';
+                    }
+
+                    if ( ! empty( $this->links['label'][$array[$key]['metakey']]['icon'] )) {
+                        $array[$key]['label'] .= ' <i class="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['icon'] ) . '"></i>';
                     }
                 }
             }
         }
+
         return $array;
     }
 
@@ -94,13 +102,18 @@ class UM_Field_With_Links {
 
         $onclick_alert = '';
 
-        if ( UM()->options()->get( 'allow_url_redirect_confirm' ) && $url !== wp_validate_redirect( $url ) ) {
-            $onclick_alert = sprintf(
-                ' onclick="' . esc_attr( 'return confirm( "%s" );' ) . '"',
-                // translators: %s: link.
-                esc_js( sprintf( __( 'This link leads to a 3rd-party website. Make sure the link is safe and you really want to go to this website: \'%s\'', 'ultimate-member' ), $url ) )
-            );
+        if ( UM()->fields()->set_mode == 'profile' ) {
+
+            if ( UM()->options()->get( 'allow_url_redirect_confirm' ) && $url !== wp_validate_redirect( $url ) ) {
+
+                $onclick_alert = sprintf(
+                    ' onclick="' . esc_attr( 'return confirm( "%s" );' ) . '"',
+                    // translators: %s: link.
+                    esc_js( sprintf( __( 'This link leads to a 3rd-party website. Make sure the link is safe and you really want to go to this website: \'%s\'', 'ultimate-member' ), $url ) )
+                );
+            }
         }
+
         return $onclick_alert;
     }
 
@@ -141,14 +154,14 @@ class UM_Field_With_Links {
         $settings_structure['appearance']['sections']['']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'Field Label With Link - meta_key, url, title, icon (one per line)', 'ultimate-member' ),
+            'label'         => __( 'Field Label With Link - meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
             'tooltip'       => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms Builder label placeholder: {link], {/link}', 'ultimate-member' ),
         );
 
         $settings_structure['appearance']['sections']['']['fields'][] = array(
             'id'            => 'um_field_meta_key_value_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'Field Value With Link - meta_key, url, title, icon (one per line)', 'ultimate-member' ),
+            'label'         => __( 'Field Value With Link - meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
             'tooltip'       => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}', 'ultimate-member' ),
         );
 
