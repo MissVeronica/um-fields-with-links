@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.0.0
+ * Version:         2.1.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -10,7 +10,7 @@
  * Author URI:      https://github.com/MissVeronica
  * Text Domain:     ultimate-member
  * Domain Path:     /languages
- * UM version:      2.6.10
+ * UM version:      2.8.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; 
@@ -151,18 +151,21 @@ class UM_Field_With_Links {
 
     public function create_setting_structures( $settings_structure ) {
 
-        $settings_structure['appearance']['sections']['']['fields'][] = array(
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Field Label With Link', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.1.0 - tested with UM 2.8.5', 'ultimate-member' );
+
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'Field Label With Link - meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
-            'tooltip'       => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms Builder label placeholder: {link], {/link}', 'ultimate-member' ),
+            'label'         => __( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
+            'description'   => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms Builder label placeholder: {link], {/link}', 'ultimate-member' ),
         );
 
-        $settings_structure['appearance']['sections']['']['fields'][] = array(
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_value_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'Field Value With Link - meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
-            'tooltip'       => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}', 'ultimate-member' ),
+            'label'         => __( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
+            'description'   => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}', 'ultimate-member' ),
         );
 
         return $settings_structure;
