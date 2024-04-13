@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.1.0
+ * Version:         2.2.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -28,7 +28,13 @@ class UM_Field_With_Links {
         }
 
         add_filter( 'um_profile_field_filter_hook__', array( $this, 'um_field_value_with_link' ), 200, 3 );
-        add_filter( 'um_get_form_fields',             array( $this, 'um_field_label_with_link' ), 200, 1 );
+
+        $this->get_field_meta_key_with_link( 'label' );
+        if ( is_array( $this->links['label'] )) {
+            foreach( $this->links['label'] as $key => $values ) {
+                add_filter( "um_{$key}_form_show_field",  array( $this, 'um_field_label_with_link' ), 200, 2 );
+            }
+        }
     }
 
     public function um_field_value_with_link( $value, $data, $type ) {
@@ -56,7 +62,7 @@ class UM_Field_With_Links {
         return $value;
     }
 
-    public function um_field_label_with_link( $array ) {
+    public function um_field_label_with_link( $output, $mode ) {
 
         if ( UM()->fields()->set_mode == 'profile' ) {
 
@@ -71,31 +77,32 @@ class UM_Field_With_Links {
             }
         }
 
-        $this->get_field_meta_key_with_link( 'label' );
+        $key = str_replace( array( 'um_', '_form_show_field' ), '', current_filter() );
 
         if ( is_array( $this->links['label'] )) {
-            foreach( $this->links['label'] as $key => $data ) {
 
-                if ( isset( $array[$key] )) {
+            if ( isset( $this->links['label'][$key] )) {
 
-                    $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$array[$key]['metakey']]['url'] );
-                    $onclick_alert = $this->alert_external_url_link( $url );
+                $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$key]['url'] );
+                $onclick_alert = $this->alert_external_url_link( $url );
 
-                    $array[$key]['label'] = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['title'] ) . '" ' . $onclick_alert . '>', $array[$key]['label'] );
-                    $array[$key]['label'] = str_replace( '{/link}', '</a>', $array[$key]['label'] );
-
-                    if ( strpos( $array[$key]['label'], '</a>' ) === false ) {
-                        $array[$key]['label'] .= '</a>';
-                    }
-
-                    if ( ! empty( $this->links['label'][$array[$key]['metakey']]['icon'] )) {
-                        $array[$key]['label'] .= ' <i class="' . esc_attr( $this->links['label'][$array[$key]['metakey']]['icon'] ) . '"></i>';
-                    }
+                $icon = '';
+                if ( ! empty( $this->links['label'][$key]['icon'] )) {
+                    $icon = ' <i class="' . esc_attr( $this->links['label'][$key]['icon'] ) . '"></i>';
                 }
+
+                $output = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' . 
+                                                    esc_attr( $this->links['label'][$key]['title'] ) . '" ' . $onclick_alert . '>', $output );
+                $output = str_replace( '{/link}', '</a>' . $icon, $output );
+
+                if ( strpos( $output, '</a>' ) !== true ) {
+                    //$output .= '</a>' . $icon;
+                }
+
             }
         }
 
-        return $array;
+        return $output;
     }
 
     public function alert_external_url_link( $url ) {
