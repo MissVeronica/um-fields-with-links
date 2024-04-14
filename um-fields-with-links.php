@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.2.1
+ * Version:         2.3.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -79,28 +79,40 @@ class UM_Field_With_Links {
 
         $key = str_replace( array( 'um_', '_form_show_field' ), '', current_filter() );
 
-        if ( is_array( $this->links['label'] )) {
+        if ( is_array( $this->links['label'] ) && isset( $this->links['label'][$key] )) {
 
-            if ( isset( $this->links['label'][$key] )) {
+            $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$key]['url'] );
+            $onclick_alert = $this->alert_external_url_link( $url );
 
-                $url = str_replace( '{userid}', um_profile_id(),  $this->links['label'][$key]['url'] );
-                $onclick_alert = $this->alert_external_url_link( $url );
+            $field_icons = substr_count( $output, '</i>' );
+            if ( ! empty( $this->links['value'][$key]['icon'] ) ) {
+                $field_icons = $field_icons - 1;
+            }
 
-                $icon = '';
-                if ( ! empty( $this->links['label'][$key]['icon'] )) {
-                    $icon = ' <i class="' . esc_attr( $this->links['label'][$key]['icon'] ) . '"></i>';
-                }
+            $field_icon = false;
+            if ( $field_icons == 1 ) {
+                $split_output = explode( '</i>', $output );
+                $output = $split_output[1];
+                $field_icon = true;
+            }
 
-                $output = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' . 
-                                                    esc_attr( $this->links['label'][$key]['title'] ) . '" ' . $onclick_alert . '>', $output );
+            $icon = '';
+            if ( ! empty( $this->links['label'][$key]['icon'] )) {
+                $icon = ' <i class="' . esc_attr( $this->links['label'][$key]['icon'] ) . '"></i>';
+            }
 
-                if ( strpos( $output, '{/link}' )) {
-                    $output = str_replace( '{/link}', '</a>' . $icon, $output );
-                    
-                } else {
-                    $output = str_replace( '</label>', '</a>' . $icon . '</label>', $output );
-                }
+            $output = str_replace( '{link}', '<a href="' . $url . '" target="_blank" class="real_url field_label_with_link" title="' .
+                                                esc_attr( $this->links['label'][$key]['title'] ) . '" ' . $onclick_alert . '>', $output );
 
+            if ( strpos( $output, '{/link}' )) {
+                $output = str_replace( '{/link}', '</a>' . $icon, $output );
+                
+            } else {
+                $output = str_replace( '</label>', '</a>' . $icon . '</label>', $output );
+            }
+
+            if ( $field_icon ) {
+                $output = $split_output[0] . '</i>' . $output;
             }
         }
 
