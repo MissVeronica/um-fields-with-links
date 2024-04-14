@@ -23,6 +23,7 @@ another_key, /page/showme.php?text={value}, my page , um-faicon-external-link</c
 1. Version 2.0.0 Included also Registration forms.
 2. Version 2.1.0 Updated to UM 2.8.5
 3. Version 2.2.0 Updated code for label links
+4. Version 2.2.1 Code improvements for labels
 
 
 ## Installation
