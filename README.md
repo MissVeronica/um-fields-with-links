@@ -24,7 +24,7 @@ another_key, /page/showme.php?text={value}, my page , um-faicon-external-link</c
 2. Version 2.1.0 Updated to UM 2.8.5
 3. Version 2.2.0 Updated code for label links
 4. Version 2.2.1 Code improvements for labels
-
+5. Version 2.3.0 Supports UM Field icon in the label.
 
 ## Installation
 Download the zip file and install as a WP Plugin, activate the plugin.
