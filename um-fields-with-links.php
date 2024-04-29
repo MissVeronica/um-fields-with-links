@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.4.0
+ * Version:         2.5.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -40,26 +40,30 @@ class UM_Field_With_Links {
 
     public function um_field_value_with_link( $value, $data, $type ) {
 
-        if ( UM()->fields()->set_mode == 'profile' ) {
+        if ( UM()->fields()->set_mode == 'profile' || defined( 'DOING_AJAX' )) {
 
-            if ( isset( UM()->fields()->viewing ) && UM()->fields()->viewing === true && ! empty( $value) ) {
+            if ( ( isset( UM()->fields()->viewing ) && UM()->fields()->viewing === true ) || defined( 'DOING_AJAX' ) ) {
 
-                $this->get_field_meta_key_with_link( 'value' );
+                if ( ! empty( $value)) {
 
-                if ( is_array( $this->links['value'] ) && in_array( $data['metakey'], array_keys( $this->links['value'] ))) {
+                    $this->get_field_meta_key_with_link( 'value' );
 
-                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $value ), $this->links['value'][$data['metakey']]['url'] );
+                    if ( is_array( $this->links['value'] ) && in_array( $data['metakey'], array_keys( $this->links['value'] ))) {
 
-                    $onclick_alert = $this->alert_external_url_link( $url );
+                        $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $value ), $this->links['value'][$data['metakey']]['url'] );
 
-                    $value = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $value . '</a>';
+                        $onclick_alert = $this->alert_external_url_link( $url );
 
-                    if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
-                        $value .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
+                        $value = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $value . '</a>';
+
+                        if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
+                            $value .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
+                        }
                     }
                 }
             }
         }
+
         return $value;
     }
 
@@ -124,7 +128,7 @@ class UM_Field_With_Links {
 
             if ( strpos( $output, '{/link}' )) {
                 $output = str_replace( '{/link}', '</a>' . $icon, $output );
-                
+
             } else {
                 $output = str_replace( '</label>', '</a>' . $icon . '</label>', $output );
             }
@@ -141,7 +145,7 @@ class UM_Field_With_Links {
 
         $onclick_alert = '';
 
-        if ( UM()->fields()->set_mode == 'profile' ) {
+        if ( UM()->fields()->set_mode == 'profile' || defined( 'DOING_AJAX' )) {
 
             if ( UM()->options()->get( 'allow_url_redirect_confirm' ) && $url !== wp_validate_redirect( $url ) ) {
 
@@ -191,7 +195,7 @@ class UM_Field_With_Links {
     public function create_setting_structures( $settings_structure ) {
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Field Label With Link', 'ultimate-member' );
-        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.4.0 - tested with UM 2.8.5', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.5.0 - tested with UM 2.8.5', 'ultimate-member' );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
