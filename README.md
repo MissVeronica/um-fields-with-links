@@ -4,7 +4,9 @@ Extension to Ultimate Member to include a Link in the Registration and Profile F
 ## UM Settings -> Appearance -> Profile
 1. Field Label With Link - meta_key, url, title, icon (one set per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: <code>{userid}</code>, UM Forms label placeholder: <code>{link], {/link}</code>
 2. Field Value With Link - meta_key, url, title, icon (one set per line) - Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: <code>{userid}, {value}</code>
-3. Plugin is also using the UM Settings -> Access -> Other -> "Allow external link redirect confirm" if clicked.
+
+## UM Settings -> Advanced -> Developers -> Redirect
+1. Plugin is also using the "Allow external link redirect confirm" if clicked.
 
 ## Examples ##
 1. Field Label With Link - meta_key, url, title, icon (one per line)
