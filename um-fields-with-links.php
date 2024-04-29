@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.5.0
+ * Version:         2.5.1
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -13,7 +13,7 @@
  * UM version:      2.8.5
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; 
+if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'UM' ) ) return;
 
 class UM_Field_With_Links {
@@ -69,10 +69,12 @@ class UM_Field_With_Links {
 
     public function um_ajax_get_members_data_with_link( $data_array, $user_id, $directory_data ) {
 
-        foreach(  $this->links['label'] as $key => $value ) {
+        if ( is_array( $this->links['label'] )) {
+            foreach(  $this->links['label'] as $key => $value ) {
 
-            if ( isset( $data_array['label_' . $key] )) {
-                $data_array['label_' . $key] = $this->reformat_label_link( $data_array['label_' . $key], $key );
+                if ( isset( $data_array['label_' . $key] )) {
+                    $data_array['label_' . $key] = $this->reformat_label_link( $data_array['label_' . $key], $key );
+                }
             }
         }
 
@@ -195,7 +197,7 @@ class UM_Field_With_Links {
     public function create_setting_structures( $settings_structure ) {
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Field Label With Link', 'ultimate-member' );
-        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.5.0 - tested with UM 2.8.5', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.5.1 - tested with UM 2.8.5', 'ultimate-member' );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
