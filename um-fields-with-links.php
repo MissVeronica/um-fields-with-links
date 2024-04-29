@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.3.0
+ * Version:         2.4.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -27,6 +27,7 @@ class UM_Field_With_Links {
             add_filter( 'um_settings_structure', array( $this, 'create_setting_structures' ), 10, 1 );
         }
 
+        add_filter( 'um_ajax_get_members_data',       array( $this, 'um_ajax_get_members_data_with_link' ), 10, 3 );
         add_filter( 'um_profile_field_filter_hook__', array( $this, 'um_field_value_with_link' ), 200, 3 );
 
         $this->get_field_meta_key_with_link( 'label' );
@@ -62,6 +63,18 @@ class UM_Field_With_Links {
         return $value;
     }
 
+    public function um_ajax_get_members_data_with_link( $data_array, $user_id, $directory_data ) {
+
+        foreach(  $this->links['label'] as $key => $value ) {
+
+            if ( isset( $data_array['label_' . $key] )) {
+                $data_array['label_' . $key] = $this->reformat_label_link( $data_array['label_' . $key], $key );
+            }
+        }
+
+        return $data_array;
+    }
+
     public function um_field_label_with_link( $output, $mode ) {
 
         if ( UM()->fields()->set_mode == 'profile' ) {
@@ -78,6 +91,11 @@ class UM_Field_With_Links {
         }
 
         $key = str_replace( array( 'um_', '_form_show_field' ), '', current_filter() );
+
+        return $this->reformat_label_link( $output, $key );
+    }
+
+    public function reformat_label_link( $output, $key ) {
 
         if ( is_array( $this->links['label'] ) && isset( $this->links['label'][$key] )) {
 
@@ -173,7 +191,7 @@ class UM_Field_With_Links {
     public function create_setting_structures( $settings_structure ) {
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Field Label With Link', 'ultimate-member' );
-        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.1.0 - tested with UM 2.8.5', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.4.0 - tested with UM 2.8.5', 'ultimate-member' );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
