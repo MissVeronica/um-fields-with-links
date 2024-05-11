@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.6.0
+ * Version:         2.6.1
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -50,8 +50,9 @@ class UM_Field_With_Links {
 
                     if ( is_array( $this->links['value'] ) && in_array( $data['metakey'], array_keys( $this->links['value'] ))) {
 
-                        if ( in_array( $data['type'], array( 'radio', 'checkbox' ))) {
+                        if ( isset( $data['max_selections'] ) && $data['max_selections'] > 1 && isset( $data['options'] ) && is_array( $data['options'] )) {
 
+                            $max = 0;
                             foreach( $data['options'] as $selection ) {
                                 if ( strpos( $value, $selection ) !== false ) {
 
@@ -63,6 +64,11 @@ class UM_Field_With_Links {
                                         $link .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
                                     }
                                     $value = str_replace( $selection, $link, $value );
+
+                                    $max++;
+                                    if ( $max == $data['max_selections'] ) {
+                                        break;
+                                    }
                                 }
                             }
 
