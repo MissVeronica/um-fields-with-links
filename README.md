@@ -31,7 +31,7 @@ another_key, /page/showme.php?text={value}, my page , um-faicon-external-link</c
 7. Version 2.5.0 Code improvements for fields in Members Directory
 8. Version 2.5.1 Code improvements
 9. Version 2.6.0 Support for radio and checkbox UM multiple fields
-10. Version 2.6.1 Support changed to also include all UM multi fields where max selections larger than 1
+10. Version 2.6.1 Support changed to also include all UM multi fields where max selections greater than 1
 
 ## Installation
 Download the zip file and install as a WP Plugin, activate the plugin.
