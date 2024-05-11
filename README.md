@@ -21,6 +21,8 @@ last_key, /user/{userid}/, Test User link, um-faicon-external-link</code>
 last_key, /userinfopage/{userid}/, Link Title , um-faicon-external-link
 another_key, /page/showme.php?text={value}, my page , um-faicon-external-link</code>
 
+For multi-select UM fields you must set a value in "Maximum number of selections"
+
 ## Updates
 1. Version 2.0.0 Included also Registration forms.
 2. Version 2.1.0 Updated to UM 2.8.5
