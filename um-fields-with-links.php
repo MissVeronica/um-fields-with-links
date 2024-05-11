@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.5.1
+ * Version:         2.6.0
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -50,14 +50,31 @@ class UM_Field_With_Links {
 
                     if ( is_array( $this->links['value'] ) && in_array( $data['metakey'], array_keys( $this->links['value'] ))) {
 
-                        $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $value ), $this->links['value'][$data['metakey']]['url'] );
+                        if ( in_array( $data['type'], array( 'radio', 'checkbox' ))) {
 
-                        $onclick_alert = $this->alert_external_url_link( $url );
+                            foreach( $data['options'] as $selection ) {
+                                if ( strpos( $value, $selection ) !== false ) {
 
-                        $value = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $value . '</a>';
+                                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $selection ), $this->links['value'][$data['metakey']]['url'] );
+                                    $onclick_alert = $this->alert_external_url_link( $url );
+                                    $link = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $selection . '</a>';
 
-                        if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
-                            $value .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
+                                    if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
+                                        $link .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
+                                    }
+                                    $value = str_replace( $selection, $link, $value );
+                                }
+                            }
+
+                        } else {
+
+                            $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $value ), $this->links['value'][$data['metakey']]['url'] );
+                            $onclick_alert = $this->alert_external_url_link( $url );
+                            $value = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $value . '</a>';
+
+                            if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
+                                $value .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
+                            }
                         }
                     }
                 }
