@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.6.2
+ * Version:         2.6.3
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -54,19 +54,22 @@ class UM_Field_With_Links {
 
                             $max = 0;
                             $data['options'] = array_map( 'trim', $data['options'] );
+                            $array = array_map( 'trim', explode( ',', $value ));
 
                             foreach( $data['options'] as $selection ) {
 
-                                if ( strpos( $value, $selection ) !== false ) {
+                                if ( in_array( $selection, $array ) ) {
+                                    $key = array_search( $selection, $array );
 
-                                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $selection ), $this->links['value'][$data['metakey']]['url'] );
+                                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $array[$key] ), $this->links['value'][$data['metakey']]['url'] );
                                     $onclick_alert = $this->alert_external_url_link( $url );
                                     $link = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $selection . '</a>';
 
                                     if ( ! empty( $this->links['value'][$data['metakey']]['icon'] ) ) {
                                         $link .= ' <i class="' . esc_attr( $this->links['value'][$data['metakey']]['icon'] ) . '"></i>';
                                     }
-                                    $value = str_replace( $selection, $link, $value );
+
+                                    $array[$key] = $link;
 
                                     $max++;
                                     if ( $max == $data['max_selections'] ) {
@@ -74,6 +77,7 @@ class UM_Field_With_Links {
                                     }
                                 }
                             }
+                            $value = implode( ', ',  $array );
 
                         } else {
 
