@@ -34,8 +34,7 @@ For multi-select UM fields you must set a numeric value greater than 1 in "Maxim
 8. Version 2.5.1 Code improvements
 9. Version 2.6.0 Support for radio and checkbox UM multiple fields
 10. Version 2.6.1 Support changed to also include all UM multi fields where max selections greater than 1
-11. Version 2.6.2 Code improvement
-12. Version 2.6.3 Code improvement
+11. Version 2.6.2, 2.6.3, 2.6.4 Code improvement
 
 ## Installation
 Download the zip file and install as a WP Plugin, activate the plugin.
