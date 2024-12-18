@@ -2,7 +2,7 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.6.4
+ * Version:         2.6.5
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
@@ -12,7 +12,7 @@
  * Update URI:      https://github.com/MissVeronica/um-fields-with-links
  * Text Domain:     ultimate-member
  * Domain Path:     /languages
- * UM version:      2.8.5
+ * UM version:      2.9.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -75,7 +75,7 @@ class UM_Field_With_Links {
                                 if ( in_array( $selection, $array ) ) {
                                     $key = array_search( $selection, $array );
 
-                                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $array[$key] ), $this->links['value'][$data['metakey']]['url'] );
+                                    $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $this->make_url_value( $array[$key] )), $this->links['value'][$data['metakey']]['url'] );
                                     $onclick_alert = $this->alert_external_url_link( $url );
                                     $link = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $selection . '</a>';
 
@@ -95,7 +95,7 @@ class UM_Field_With_Links {
 
                         } else {
 
-                            $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $value ), $this->links['value'][$data['metakey']]['url'] );
+                            $url = str_replace( array( '{userid}', '{value}' ), array( um_profile_id(), $this->make_url_value( $value ) ), $this->links['value'][$data['metakey']]['url'] );
                             $onclick_alert = $this->alert_external_url_link( $url );
                             $value = '<a href="' . $url . '" target="_blank" class="real_url field_value_with_link" title="' . esc_attr( $this->links['value'][$data['metakey']]['title'] ) . '" ' . $onclick_alert . '>' . $value . '</a>';
 
@@ -108,6 +108,15 @@ class UM_Field_With_Links {
             }
         }
 
+        return $value;
+    }
+
+    public function make_url_value( $value ) {
+
+        $value = str_replace( array( '&', ' ' ), array( 'and', '-' ), $value );
+        $value = strtolower( $value );
+        global $um_html_view_function;
+        $um_html_view_function->debug_cpu_update_profile( $value, __FUNCTION__, 'value', basename( $_SERVER['PHP_SELF'] ), __line__ );
         return $value;
     }
 
@@ -198,7 +207,7 @@ class UM_Field_With_Links {
                 $onclick_alert = sprintf(
                     ' onclick="' . esc_attr( 'return confirm( "%s" );' ) . '"',
                     // translators: %s: link.
-                    esc_js( sprintf( __( 'This link leads to a 3rd-party website. Make sure the link is safe and you really want to go to this website: \'%s\'', 'ultimate-member' ), $url ) )
+                    esc_js( sprintf( esc_html__( 'This link leads to a 3rd-party website. Make sure the link is safe and you really want to go to this website: \'%s\'', 'ultimate-member' ), $url ) )
                 );
             }
         }
@@ -255,21 +264,23 @@ class UM_Field_With_Links {
 
     public function create_setting_structures( $settings_structure ) {
 
+        $prefix = '&nbsp; * &nbsp;';
+
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Fields With Links', 'ultimate-member' );
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = $this->get_possible_plugin_update( 'um-fields-with-links' );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
-            'description'   => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms Builder label placeholder: {link], {/link}', 'ultimate-member' ),
+            'label'         => $prefix . esc_html__( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
+            'description'   => esc_html__( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholder in the url: {userid}, UM Forms Builder label placeholder: {link], {/link}', 'ultimate-member' ),
         );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_value_with_link',
             'type'          => 'textarea',
-            'label'         => __( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
-            'description'   => __( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}', 'ultimate-member' ),
+            'label'         => $prefix . esc_html__( 'meta_key, url, title, icon (one set per line)', 'ultimate-member' ),
+            'description'   => esc_html__( 'Enter the meta_key comma separated with the url, title and UM icon. Placeholders in the url: {userid}, {value}', 'ultimate-member' ),
         );
 
         return $settings_structure;
