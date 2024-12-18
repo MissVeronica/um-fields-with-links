@@ -2,12 +2,14 @@
 /**
  * Plugin Name:     Ultimate Member - Fields With Links
  * Description:     Extension to Ultimate Member to include a Link in the Register and Profile Form's Field Value and/or Field Label.
- * Version:         2.6.3
+ * Version:         2.6.4
  * Requires PHP:    7.4
  * Author:          Miss Veronica
  * License:         GPL v2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  * Author URI:      https://github.com/MissVeronica
+ * Plugin URI:      https://github.com/MissVeronica/um-fields-with-links
+ * Update URI:      https://github.com/MissVeronica/um-fields-with-links
  * Text Domain:     ultimate-member
  * Domain Path:     /languages
  * UM version:      2.8.5
@@ -22,6 +24,8 @@ class UM_Field_With_Links {
 
     function __construct() {
 
+        define( 'Plugin_Basename_FWL', plugin_basename( __FILE__ ));
+
         if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
 
             add_filter( 'um_settings_structure', array( $this, 'create_setting_structures' ), 10, 1 );
@@ -30,12 +34,22 @@ class UM_Field_With_Links {
         add_filter( 'um_ajax_get_members_data',       array( $this, 'um_ajax_get_members_data_with_link' ), 10, 3 );
         add_filter( 'um_profile_field_filter_hook__', array( $this, 'um_field_value_with_link' ), 200, 3 );
 
+        add_filter( 'plugin_action_links_' . Plugin_Basename_FWL, array( $this, 'plugin_settings_link' ), 10, 1 );
+
         $this->get_field_meta_key_with_link( 'label' );
         if ( is_array( $this->links['label'] )) {
             foreach( $this->links['label'] as $key => $values ) {
                 add_filter( "um_{$key}_form_show_field",  array( $this, 'um_field_label_with_link' ), 200, 2 );
             }
         }
+    }
+
+    public function plugin_settings_link( $links ) {
+
+        $url = get_admin_url() . 'admin.php?page=um_options&tab=appearance';
+        $links[] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Settings' ) . '</a>';
+
+        return $links;
     }
 
     public function um_field_value_with_link( $value, $data, $type ) {
@@ -224,10 +238,25 @@ class UM_Field_With_Links {
         }
     }
 
+    public function get_possible_plugin_update( $plugin ) {
+
+        $plugin_data = get_plugin_data( __FILE__ );
+
+        $documention = sprintf( ' <a href="%s" target="_blank" title="%s">%s</a>',
+                                        esc_url( $plugin_data['PluginURI'] ),
+                                        esc_html__( 'GitHub plugin documentation and download', 'ultimate-member' ),
+                                        esc_html__( 'Documentation', 'ultimate-member' ));
+
+        $description = sprintf( esc_html__( 'Plugin "Fields With Links" version %s - tested with UM 2.9.2 - %s', 'ultimate-member' ),
+                                                                            $plugin_data['Version'], $documention );
+
+        return $description;
+    }
+
     public function create_setting_structures( $settings_structure ) {
 
-        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Field Label With Link', 'ultimate-member' );
-        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = __( 'Plugin version 2.5.1 - tested with UM 2.8.5', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['title'] = __( 'Fields With Links', 'ultimate-member' );
+        $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['description'] = $this->get_possible_plugin_update( 'um-fields-with-links' );
 
         $settings_structure['appearance']['sections']['']['form_sections']['meta_key_label_with_link']['fields'][] = array(
             'id'            => 'um_field_meta_key_label_with_link',
@@ -248,3 +277,5 @@ class UM_Field_With_Links {
 }
 
 new UM_Field_With_Links();
+
+
