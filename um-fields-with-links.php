@@ -115,8 +115,7 @@ class UM_Field_With_Links {
 
         $value = str_replace( array( '&', ' ' ), array( 'and', '-' ), $value );
         $value = strtolower( $value );
-        global $um_html_view_function;
-        $um_html_view_function->debug_cpu_update_profile( $value, __FUNCTION__, 'value', basename( $_SERVER['PHP_SELF'] ), __line__ );
+
         return $value;
     }
 
