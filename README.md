@@ -21,7 +21,7 @@ last_key, /user/{userid}/, Test User link, um-faicon-external-link</code>
 last_key, /userinfopage/{userid}/, Link Title , um-faicon-external-link
 another_key, /page/showme.php?text={value}, my page , um-faicon-external-link</code>
 
-For multi-select UM fields you must set a numeric value greater than 1 in "Maximum number of selections"
+For multi-select UM fields you must set a numeric value greater than 1 in "Maximum number of selections" in the UM Forms Designer.
 
 ## Updates
 1. Version 2.0.0 Included also Registration forms.
